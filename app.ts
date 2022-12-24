@@ -1,13 +1,15 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 
-const app: Application = express();
-app.use(express.json());
-
 import userRoutes from "./routes/users";
 import videoRoutes from "./routes/comments";
 import commentRoutes from "./routes/comments";
 import authRoutes from "./routes/auth";
 import { errorhandler } from "./error/errorHandler";
+import cookieParser from "cookie-parser";
+
+const app: Application = express();
+app.use(express.json());
+app.use(cookieParser());
 
 //routes
 app.use("/api/users", userRoutes);

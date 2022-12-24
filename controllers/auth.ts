@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 //
-import User from "../model/User";
+import User, { IUser } from "../model/User";
 
 export const signUp = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -41,5 +42,16 @@ export const signIn = asyncHandler(
       throw new Error("Wrong credentials");
     }
     //   const newUser = new User();
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!);
+
+    const { password, ...others } = user._doc;
+
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
+      .json(others)
+      .status(200);
   }
 );
