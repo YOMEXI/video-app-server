@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { IGetUserAuthInfoRequest } from "../utils/@types";
 import User from "../model/User";
+import Video from "../model/Video";
 
 export const updateUser = asyncHandler(
   async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
@@ -46,7 +47,7 @@ export const getUser = asyncHandler(
 
 export const subscribe = asyncHandler(
   async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
-    await User.findById(req.user.id, {
+    await User.findByIdAndUpdate(req.user.id, {
       $push: { subscribedUsers: req.params.id },
     });
 
@@ -54,12 +55,12 @@ export const subscribe = asyncHandler(
       $inc: { subscribers: 1 },
     });
 
-    res.status(200).json("Subscription Succesfull");
+    res.status(200).json("Subscription Successful");
   }
 );
 export const unSubscribe = asyncHandler(
   async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
-    await User.findById(req.user.id, {
+    await User.findByIdAndUpdate(req.user.id, {
       $pull: { subscribedUsers: req.params.id },
     });
 
@@ -67,12 +68,35 @@ export const unSubscribe = asyncHandler(
       $inc: { subscribers: -1 },
     });
 
-    res.status(200).json("Unsubscription Succesfull");
+    res.status(200).json("Unsubscription Successful");
   }
 );
 export const likeVideo = asyncHandler(
-  (req: Request, res: Response, next: NextFunction) => {}
+  async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
+    const id = req.user.id;
+    const videoId = req.params.videoId;
+
+    const check = await Video.findById(videoId);
+    console.log(check, videoId);
+
+    await Video.findByIdAndUpdate(videoId, {
+      $addToSet: { likes: id },
+      $pull: { dislikes: id },
+    });
+
+    res.status(200).json("Video has been liked");
+  }
 );
 export const dislikeVideo = asyncHandler(
-  (req: Request, res: Response, next: NextFunction) => {}
+  async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
+    const id = req.user.id;
+    const videoId = req.params.videoId;
+
+    await Video.findByIdAndUpdate(videoId, {
+      $addToSet: { dislikes: id },
+      $pull: { likes: id },
+    });
+
+    res.status(200).json("Video has been disiked");
+  }
 );

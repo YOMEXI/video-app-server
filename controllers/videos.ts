@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import Video from "../model/Video";
 import { IGetUserAuthInfoRequest } from "../utils/@types";
+import User from "../model/User";
 
 export const addVideo = asyncHandler(
   async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
@@ -92,5 +93,37 @@ export const trend = asyncHandler(
 );
 
 export const subscribedVideo = asyncHandler(
-  async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {}
+  async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
+    const user = await User.findById(req.user.id);
+    const subscribedChannels = user?.subscribedUsers;
+
+    const list = await Promise.all(
+      subscribedChannels?.map((channelId) => {
+        return Video.find({ userId: channelId });
+      }) ?? []
+    );
+
+    res.status(200).json(list.flat().sort((a, b) => b.createdAt - a.createdAt));
+  }
+);
+
+export const videoByTags = asyncHandler(
+  async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
+    const tags = req.query.tags;
+
+    const videos = await Video.find({ tags: { $in: tags } }).limit(10);
+    res.status(200).json(videos);
+  }
+);
+
+export const Search = asyncHandler(
+  async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
+    const query = req.query.q;
+
+    const videos = await Video.find({
+      title: { $regex: query, $options: "i" },
+    });
+
+    res.status(200).json(videos);
+  }
 );

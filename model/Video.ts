@@ -10,6 +10,7 @@ export interface IVideo extends Document {
   tags: string[];
   likes: string[];
   dislikes: string[];
+  createdAt?: any;
 }
 
 const VideoSchema = new Schema<IVideo>(

@@ -18,7 +18,7 @@ router.get("/find/:id", getUser);
 router.delete("/:id", verifyToken, deleteUser);
 router.put("/sub/:id", verifyToken, subscribe);
 router.put("/unsub/:id", verifyToken, unSubscribe);
-router.put("/like/:id", verifyToken, likeVideo);
-router.put("/dislike/:id", verifyToken, dislikeVideo);
+router.put("/like/:videoId", verifyToken, likeVideo);
+router.put("/dislike/:videoId", verifyToken, dislikeVideo);
 
 export default router;
