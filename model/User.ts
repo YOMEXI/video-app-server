@@ -7,6 +7,7 @@ export interface IUser extends Document {
   subscribers: number;
   subscribedUsers: string[];
   img: string;
+  _doc?: any;
 }
 
 const UserSchema = new Schema<IUser>(

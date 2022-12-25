@@ -1,8 +1,30 @@
 import express, { Router } from "express";
-import { stest } from "../controllers/user";
+import {
+  Search,
+  addVideo,
+  addView,
+  deleteVideo,
+  getVideo,
+  randomVideo,
+  subscribedVideo,
+  trend,
+  updateVideo,
+  videoByTags,
+} from "../controllers/videos";
+import { verifyToken } from "../utils/verifyToken";
 
 const router: Router = express.Router();
 
-router.get("/test", stest);
+router.post("/add", verifyToken, addVideo);
+router.put("/:id", verifyToken, updateVideo);
+router.delete("/:id", verifyToken, deleteVideo);
+router.get("/find/:id", verifyToken, getVideo);
+
+router.put("/view/:id", addView);
+router.get("/random", randomVideo);
+router.get("/sub", verifyToken, subscribedVideo);
+router.get("/trend", trend);
+router.get("/tags", videoByTags);
+router.get("/search", Search);
 
 export default router;
