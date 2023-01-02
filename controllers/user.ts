@@ -33,7 +33,7 @@ export const deleteUser = asyncHandler(
       res.status(200).json("User Has been Deleted");
     } else {
       res.status(401);
-      throw new Error("You can Delete only your account");
+      throw new Error("You can Delete only your accounts");
     }
   }
 );
