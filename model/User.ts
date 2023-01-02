@@ -7,6 +7,7 @@ export interface IUser extends Document {
   subscribers: number;
   subscribedUsers: string[];
   img: string;
+  fromGoogle: boolean;
   _doc?: any;
 }
 
@@ -24,10 +25,14 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      require: true,
+      // require: true,
     },
     img: {
       type: String,
+    },
+    fromGoogle: {
+      type: Boolean,
+      default: false,
     },
     subscribers: {
       type: Number,
