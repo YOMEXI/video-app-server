@@ -77,7 +77,6 @@ export const likeVideo = asyncHandler(
     const videoId = req.params.videoId;
 
     const check = await Video.findById(videoId);
-    console.log(check, videoId);
 
     await Video.findByIdAndUpdate(videoId, {
       $addToSet: { likes: id },
